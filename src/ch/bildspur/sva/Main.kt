@@ -1,5 +1,6 @@
 package ch.bildspur.sva
 
+import ch.bildspur.sva.sketch.SVASketch
 import processing.core.PApplet
 
 /**
@@ -7,6 +8,6 @@ import processing.core.PApplet
  */
 
 fun main(args: Array<String>) {
-    val sketch = Sketch()
-    PApplet.runSketch(arrayOf("Sketch "), sketch)
+    val sketch = SVASketch()
+    PApplet.runSketch(arrayOf("SVASketch "), sketch)
 }

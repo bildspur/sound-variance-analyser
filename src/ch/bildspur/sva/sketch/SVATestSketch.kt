@@ -1,5 +1,6 @@
-package ch.bildspur.sva
+package ch.bildspur.sva.sketch
 
+import ch.bildspur.sva.sketch.controller.SyphonController
 import ch.bildspur.sva.sound.LoopRingBuffer
 import ch.bildspur.sva.sound.SoundVarianceAnalyser
 import ddf.minim.AudioPlayer
@@ -12,7 +13,7 @@ import processing.video.Movie
 /**
  * Created by cansik on 21.09.16.
  */
-class Sketch : PApplet()
+class SVATestSketch : PApplet()
 {
     internal val OUTPUT_WIDTH = 640
     internal val OUTPUT_HEIGHT = 480
@@ -45,9 +46,8 @@ class Sketch : PApplet()
     {
         frameRate(FRAME_RATE)
 
-        syphon.setupSyphon()
-
-        surface.setTitle("Sound Variance Analyser")
+        syphon.setupSyphon("SVA Test")
+        surface.setTitle("SVA Test")
 
         //song = sva.minim.loadFile("justice-minimix.mp3", 2048)
         song = sva.minim.loadFile("techhouse-minimix.mp3", 2048)

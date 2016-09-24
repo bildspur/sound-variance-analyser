@@ -1,4 +1,4 @@
-package ch.bildspur.sva
+package ch.bildspur.sva.sketch.controller
 
 import codeanticode.syphon.Syphon
 import codeanticode.syphon.SyphonServer
@@ -14,14 +14,9 @@ class SyphonController(internal var sketch: PApplet) {
 
     internal var syphon : SyphonServer? = null
 
-    fun setupSyphon()
+    fun setupSyphon(name:String)
     {
-        syphon = SyphonServer(sketch, "SoundVarianceAnalyser")
-    }
-
-    fun sendScreenToSyphon() {
-        sketch.loadPixels()
-        syphon!!.sendScreen()
+        syphon = SyphonServer(sketch, name)
     }
 
     fun sendImageToSyphon(p: PImage) {
