@@ -47,7 +47,7 @@ class Sketch : PApplet()
 
         syphon.setupSyphon()
 
-        surface.setTitle("Sound Character Analyser")
+        surface.setTitle("Sound Variance Analyser")
 
         //song = sva.minim.loadFile("justice-minimix.mp3", 2048)
         song = sva.minim.loadFile("techhouse-minimix.mp3", 2048)
