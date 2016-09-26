@@ -48,7 +48,7 @@ class SVASketch : PApplet()
 
     override fun draw()
     {
-        background(50)
+        background(55f)
         sva.listen()
 
         ui!!.render()
