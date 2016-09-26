@@ -17,6 +17,8 @@ class UIController(val sketch: PApplet)
     fun init()
     {
         cp5.isAutoDraw = false
+
+
     }
 
     fun render()
