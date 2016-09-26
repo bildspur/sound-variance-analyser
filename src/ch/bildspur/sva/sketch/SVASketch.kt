@@ -25,7 +25,7 @@ class SVASketch : PApplet()
     internal var sva : SoundVarianceAnalyser = SoundVarianceAnalyser(this)
 
     internal val syphon = SyphonController(this)
-    internal val ui = UIController(this)
+    internal var ui:UIController? = null
 
     override fun settings()
     {
@@ -40,8 +40,10 @@ class SVASketch : PApplet()
         surface.setTitle(NAME)
         syphon.setupSyphon(NAME)
 
+        ui = UIController(this)
+
         sva.init()
-        ui.init()
+        ui!!.init()
     }
 
     override fun draw()
@@ -49,7 +51,7 @@ class SVASketch : PApplet()
         background(50)
         sva.listen()
 
-        ui.render()
+        ui!!.render()
     }
 
     fun movieEvent(m: Movie) {

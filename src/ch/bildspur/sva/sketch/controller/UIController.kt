@@ -12,12 +12,11 @@ class UIController(val sketch: PApplet)
 
     init {
         cp5 = ControlP5(sketch)
-        cp5.isAutoDraw = false
     }
 
     fun init()
     {
-
+        cp5.isAutoDraw = false
     }
 
     fun render()
