@@ -8,6 +8,7 @@ class Sector (var name:String, var start:Float, var end:Float) {
     var fadeOut = 0f
 
     var clipDuration = 100
+    var clipFolder = ""
 
     val length: Float
         get() = end - start

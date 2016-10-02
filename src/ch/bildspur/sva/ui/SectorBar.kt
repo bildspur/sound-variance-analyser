@@ -25,7 +25,7 @@ class SectorBar(val sketch: SVASketch, val width:Float, val height:Float) {
 
     val sectorSelected = Event<Sector>()
 
-    fun init() {
+    init {
 
     }
 

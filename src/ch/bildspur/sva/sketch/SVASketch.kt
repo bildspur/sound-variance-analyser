@@ -36,6 +36,7 @@ class SVASketch : PApplet()
 
     override fun setup()
     {
+        smooth()
         frameRate(FRAME_RATE)
 
         surface.setTitle(NAME)
