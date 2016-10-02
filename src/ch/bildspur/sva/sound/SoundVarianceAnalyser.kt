@@ -65,7 +65,7 @@ class SoundVarianceAnalyser(internal var sketch: PApplet) {
 
     fun varianceOverTime() : Float
     {
-        val sensitivitySize = (MAX_SENSITIVTY * sensitivity).toInt()
+        val sensitivitySize = (MAX_SENSITIVTY * (1f - sensitivity)).toInt()
         return normalizeVariance(varianceTracking.getLatest(sensitivitySize).average().toFloat())
     }
 

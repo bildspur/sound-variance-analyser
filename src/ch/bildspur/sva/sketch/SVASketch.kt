@@ -2,12 +2,9 @@ package ch.bildspur.sva.sketch
 
 import ch.bildspur.sva.sketch.controller.SyphonController
 import ch.bildspur.sva.sketch.controller.UIController
-import ch.bildspur.sva.sound.LoopRingBuffer
 import ch.bildspur.sva.sound.SoundVarianceAnalyser
-import ddf.minim.AudioPlayer
 import processing.core.PApplet
 import processing.core.PConstants
-import processing.core.PVector
 import processing.opengl.PJOGL
 import processing.video.Movie
 

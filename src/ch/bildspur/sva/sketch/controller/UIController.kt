@@ -2,6 +2,8 @@ package ch.bildspur.sva.sketch.controller
 
 import ch.bildspur.sva.model.Sector
 import ch.bildspur.sva.sketch.SVASketch
+import ch.bildspur.sva.ui.ClipView
+import ch.bildspur.sva.ui.LineView
 import ch.bildspur.sva.ui.SectorBar
 import ch.bildspur.sva.util.center
 import controlP5.ControlFont
@@ -46,6 +48,12 @@ class UIController(val sketch: SVASketch)
 
     var selectedSector : Sector? = null
 
+    var clipView : ClipView by Delegates.notNull()
+
+    var separator : LineView by Delegates.notNull()
+
+    var sensitivitySlider: Slider by Delegates.notNull()
+
     init {
         cp5 = ControlP5(sketch)
     }
@@ -60,8 +68,11 @@ class UIController(val sketch: SVASketch)
         hPos += sectorView.height + (2 * controlSpace)
 
         // test
-        sectorView.addSector(Sector("Low", 0f, 0.5f))
-        sectorView.addSector(Sector("High", 0.5f, 1f))
+        sectorView.addSector(Sector("Low", 0f, 0.5f, "low"))
+        sectorView.addSector(Sector("High", 0.5f, 1f, "high"))
+
+        clipView = ClipView(sketch, 200f, 200f)
+        clipView.position = PVector(sketch.center(clipView.width, sectorView.position.x, sketch.width / 2f), hPos)
 
         // init cp5 controls
         nameField = cp5.addTextfield("Name")
@@ -126,7 +137,20 @@ class UIController(val sketch: SVASketch)
                 .onChange { e ->
                     selectedSector?.clipFolder = clipFolderField.text
                 }
-        hPos += endField.height + controlSpace
+        hPos += endField.height + (2 * controlSpace)
+
+        separator = LineView(sketch, hPos, 2 * margin)
+
+        hPos += (2 * controlSpace)
+
+        sensitivitySlider = cp5.addSlider("Sensitivity")
+                .setPosition(margin * 2, hPos)
+                .setSize(editControlWidth, editControlHeight)
+                .setValue(sketch.sva.sensitivity)
+                .setRange(0f, 1f)
+                .onChange { e ->
+                    sketch.sva.sensitivity = sensitivitySlider.value
+                }
 
         styleCP5()
     }
@@ -167,7 +191,7 @@ class UIController(val sketch: SVASketch)
 
         for(control in cp5.all)
         {
-            //control.setFont(font)
+            control.setFont(font)
             control.setColorBackground(backgroundColor.rgb)
 
             when (control)
@@ -191,7 +215,6 @@ class UIController(val sketch: SVASketch)
 
     fun sectorSelected(sector:Sector)
     {
-        PApplet.println("Selected: ${sector.name}")
         selectedSector = sector
         selectedSectorChanged()
     }
@@ -203,6 +226,8 @@ class UIController(val sketch: SVASketch)
         cp5.end()
 
         sectorView.render()
+        clipView.render()
+        separator.render(sketch.g)
     }
 
     internal fun center(width:Float):Float

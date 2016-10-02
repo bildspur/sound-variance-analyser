@@ -34,7 +34,7 @@ class SectorBar(val sketch: SVASketch, val width:Float, val height:Float) {
         drawSectors()
         visualizeVarianceOverTime()
         drawBorder()
-        sketch.translate(0f, 0f)
+        sketch.translate(-position.x, -position.y)
     }
 
     internal fun drawBorder()
