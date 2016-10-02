@@ -3,7 +3,6 @@ package ch.bildspur.sva.ui
 import ch.bildspur.event.Event
 import ch.bildspur.sva.model.Sector
 import ch.bildspur.sva.sketch.SVASketch
-import ch.bildspur.sva.util.center
 import processing.core.PApplet
 import processing.core.PVector
 import java.awt.Color
@@ -11,9 +10,9 @@ import java.awt.Color
 /**
  * Created by cansik on 02.10.16.
  */
-class SectorView (val sketch: SVASketch, val width:Float, val height:Float) {
+class SectorBar(val sketch: SVASketch, val width:Float, val height:Float) {
     var position = PVector()
-    val sectors = mutableListOf<Sector>()
+    internal val sectorViews = mutableListOf<SectorView>()
 
     val sectorColors = listOf(
             Color(26, 188, 156),
@@ -23,8 +22,6 @@ class SectorView (val sketch: SVASketch, val width:Float, val height:Float) {
             Color(243, 156, 18),
             Color(44, 62, 80)
             )
-
-    var selectedSector:Sector? = null
 
     val sectorSelected = Event<Sector>()
 
@@ -59,31 +56,32 @@ class SectorView (val sketch: SVASketch, val width:Float, val height:Float) {
 
     internal fun drawSectors()
     {
-        for ((index, sector) in sectors.withIndex())
-        {
-            val sectorColor = sectorColors[index]
+        for (sectorView in sectorViews)
+            sectorView.render(sketch)
+    }
 
-            val x = PApplet.map(sector.start, 0f, 1f, 0f, width)
-            val y = 0f
-            val w = PApplet.map(sector.length, 0f, 1f, 0f, width)
-            val h = height
+    fun addSector(sector: Sector)
+    {
+        sectorViews.add(SectorView(sector, this, sectorColors[sectorViews.size]))
+    }
 
-            // draw color
-            sketch.noStroke()
-            sketch.fill(sectorColor.rgb)
-            sketch.rect(x, y, w, h)
-
-            // draw label
-            sketch.fill(255f)
-            sketch.textAlign(PApplet.CENTER, PApplet.CENTER)
-            sketch.text(sector.name,
-                    sketch.center(0f, x, x + w),
-                    sketch.center(0f, y, y + h))
-        }
+    fun removeSector(sector: Sector)
+    {
+        sectorViews.removeAll { e -> e.sector == sector }
     }
 
     fun mousePressed(mouse:PVector) {
+        for (sectorView in sectorViews) {
+            sectorView.isSelected = sectorView.isInside(mouse)
 
+            if(sectorView.isSelected)
+                sectorSelected(sectorView.sector)
+        }
+    }
+
+    fun mouseMoved(mouse: PVector) {
+        for (sectorView in sectorViews)
+            sectorView.isHover = sectorView.isInside(mouse)
     }
 
     fun mouseDragged(mouse:PVector) {
