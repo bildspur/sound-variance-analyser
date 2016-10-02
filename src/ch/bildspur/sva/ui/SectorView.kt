@@ -1,8 +1,7 @@
 package ch.bildspur.sva.ui
 
-import ch.bildspur.event.Event
 import ch.bildspur.sva.model.Sector
-import ch.bildspur.sva.sketch.SVASketch
+import ch.bildspur.sva.util.Rectangle
 import ch.bildspur.sva.util.center
 import processing.core.PApplet
 import processing.core.PVector
@@ -11,86 +10,37 @@ import java.awt.Color
 /**
  * Created by cansik on 02.10.16.
  */
-class SectorView (val sketch: SVASketch, val width:Float, val height:Float) {
-    var position = PVector()
-    val sectors = mutableListOf<Sector>()
+class SectorView (val sector: Sector, val parent: SectorBar, val color: Color) {
 
-    val sectorColors = listOf(
-            Color(26, 188, 156),
-            Color(52, 152, 219),
-            Color(241, 196, 15),
-            Color(231, 76, 60),
-            Color(243, 156, 18),
-            Color(44, 62, 80)
-            )
+    var isHover = false
+    var isSelected = false
 
-    var selectedSector:Sector? = null
-
-    val sectorSelected = Event<Sector>()
-
-    fun init() {
-
-    }
-
-    fun render() {
-        sketch.translate(position.x, position.y)
-        drawSectors()
-        visualizeVarianceOverTime()
-        drawBorder()
-        sketch.translate(0f, 0f)
-    }
-
-    internal fun drawBorder()
+    fun render(g:PApplet)
     {
-        sketch.stroke(255)
-        sketch.strokeWeight(1f)
-        sketch.noFill()
-        sketch.rect(0f, 0f, width, height)
+        val rect = rectangle()
+
+        // draw color
+        g.noStroke()
+        g.fill(if(isHover) color.brighter().rgb else color.rgb)
+        g.rect(rect.x, rect.y, rect.width, rect.height)
+
+        // draw label
+        g.fill(if(isSelected) 255f else 0f)
+        g.textAlign(PApplet.CENTER, PApplet.CENTER)
+        g.text(sector.name,
+                g.center(0f, rect.x, rect.x + rect.width),
+                g.center(0f, rect.y, rect.y + rect.height))
     }
 
-    internal fun visualizeVarianceOverTime()
+    fun rectangle() : Rectangle {
+        return Rectangle(PApplet.map(sector.start, 0f, 1f, 0f, parent.width),
+                0f,
+                PApplet.map(sector.length, 0f, 1f, 0f, parent.width),
+                parent.height)
+    }
+
+    fun isInside(m : PVector) : Boolean
     {
-        val variance = sketch.sva.varianceOverTime()
-
-        sketch.noStroke()
-        sketch.fill(255f, 100f)
-        sketch.rect(0f, 0f, PApplet.map(variance, 0f, 1f, 0f, width), height)
-    }
-
-    internal fun drawSectors()
-    {
-        for ((index, sector) in sectors.withIndex())
-        {
-            val sectorColor = sectorColors[index]
-
-            val x = PApplet.map(sector.start, 0f, 1f, 0f, width)
-            val y = 0f
-            val w = PApplet.map(sector.length, 0f, 1f, 0f, width)
-            val h = height
-
-            // draw color
-            sketch.noStroke()
-            sketch.fill(sectorColor.rgb)
-            sketch.rect(x, y, w, h)
-
-            // draw label
-            sketch.fill(255f)
-            sketch.textAlign(PApplet.CENTER, PApplet.CENTER)
-            sketch.text(sector.name,
-                    sketch.center(0f, x, x + w),
-                    sketch.center(0f, y, y + h))
-        }
-    }
-
-    fun mousePressed(mouse:PVector) {
-
-    }
-
-    fun mouseDragged(mouse:PVector) {
-
-    }
-
-    fun mouseReleased(mouse:PVector) {
-
+        return rectangle().isInside(m)
     }
 }

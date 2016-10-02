@@ -16,8 +16,8 @@ import processing.video.Movie
  */
 class SVASketch : PApplet()
 {
-    internal val OUTPUT_WIDTH = 300
-    internal val OUTPUT_HEIGHT = 600
+    internal val OUTPUT_WIDTH = 600
+    internal val OUTPUT_HEIGHT = 400
 
     internal val NAME = "Sound Variance Analyser"
 
@@ -65,6 +65,10 @@ class SVASketch : PApplet()
 
     override fun mouseDragged() {
         ui!!.mouseDragged()
+    }
+
+    override fun mouseMoved() {
+        ui!!.mouseMoved()
     }
 
     override fun mouseReleased() {
