@@ -7,6 +7,7 @@ import ch.bildspur.sva.sound.SoundVarianceAnalyser
 import ddf.minim.AudioPlayer
 import processing.core.PApplet
 import processing.core.PConstants
+import processing.core.PVector
 import processing.opengl.PJOGL
 import processing.video.Movie
 
@@ -56,5 +57,17 @@ class SVASketch : PApplet()
 
     fun movieEvent(m: Movie) {
         m.read()
+    }
+
+    override fun mousePressed() {
+        ui!!.mousePressed()
+    }
+
+    override fun mouseDragged() {
+        ui!!.mouseDragged()
+    }
+
+    override fun mouseReleased() {
+        ui!!.mouseReleased()
     }
 }
