@@ -1,5 +1,6 @@
 package ch.bildspur.sva.sound
 
+import ch.bildspur.sva.sound.math.linearWeightedAverage
 import ddf.minim.AudioSource
 import ddf.minim.Minim
 import ddf.minim.analysis.BeatDetect
@@ -66,7 +67,8 @@ class SoundVarianceAnalyser(internal var sketch: PApplet) {
     fun varianceOverTime() : Float
     {
         val sensitivitySize = (MAX_SENSITIVTY * (1f - sensitivity)).toInt()
-        return normalizeVariance(varianceTracking.getLatest(sensitivitySize).average().toFloat())
+        val values = varianceTracking.getLatest(sensitivitySize)
+        return normalizeVariance(values.linearWeightedAverage().toFloat())
     }
 
     internal fun normalizeVariance(variance:Float) : Float {

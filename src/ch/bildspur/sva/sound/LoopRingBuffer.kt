@@ -74,7 +74,7 @@ class LoopRingBuffer(size: Int) {
         val result = FloatArray(length)
 
         for (i in 0..length - 1) {
-            val p = (buffer.size + position - i) % buffer.size
+            val p = (buffer.size + position - i - 1) % buffer.size
             result[result.size - 1 - i] = buffer[p]
         }
 
