@@ -74,10 +74,6 @@ class UIController(val sketch: SVASketch)
         sectorView.sectorSelected += { sectorSelected(it) }
         hPos += sectorView.height + (2 * controlSpace)
 
-        // test
-        sectorView.addSector(Sector("Low", 0f, 0.5f, "low"))
-        sectorView.addSector(Sector("High", 0.5f, 1f, "high"))
-
         clipView = ClipView(sketch, 200f, 200f)
         clipView.position = PVector(sketch.center(clipView.width, sectorView.position.x, sketch.width / 2f), hPos)
 
@@ -266,6 +262,11 @@ class UIController(val sketch: SVASketch)
 
                 is Slider -> {
                     control.captionLabel.style.marginLeft = -editControlWidth + labelMarginLeft - 5
+                }
+
+                is Toggle -> {
+                    control.captionLabel.style.marginTop = labelMarginTop
+                    control.captionLabel.style.marginLeft = labelMarginLeft
                 }
             }
         }

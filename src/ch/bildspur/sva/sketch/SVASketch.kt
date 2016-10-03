@@ -1,5 +1,7 @@
 package ch.bildspur.sva.sketch
 
+import ch.bildspur.sva.model.Sector
+import ch.bildspur.sva.sketch.controller.ClipController
 import ch.bildspur.sva.sketch.controller.SyphonController
 import ch.bildspur.sva.sketch.controller.UIController
 import ch.bildspur.sva.sound.SoundVarianceAnalyser
@@ -7,6 +9,8 @@ import processing.core.PApplet
 import processing.core.PConstants
 import processing.opengl.PJOGL
 import processing.video.Movie
+import javax.sound.sampled.Clip
+import kotlin.properties.Delegates
 
 /**
  * Created by cansik on 25.09.16.
@@ -23,7 +27,10 @@ class SVASketch : PApplet()
     internal var sva : SoundVarianceAnalyser = SoundVarianceAnalyser(this)
 
     internal val syphon = SyphonController(this)
-    internal var ui:UIController? = null
+    internal var ui:UIController by Delegates.notNull()
+    internal var clips:ClipController by Delegates.notNull()
+
+    val sectors = mutableListOf<Sector>()
 
     override fun settings()
     {
@@ -42,15 +49,27 @@ class SVASketch : PApplet()
         ui = UIController(this)
 
         sva.init()
-        ui!!.init()
+        ui.init()
+
+
+        // add default sectors
+        sectors.add(Sector("Low", 0f, 0.3333f, "low"))
+        sectors.add(Sector("Mid", 0.3333f, 0.6666f, "mid"))
+        sectors.add(Sector("High", 0.6666f, 1f, "high"))
+
+        for(sector in sectors)
+            ui.sectorView.addSector(sector)
+
+        clips = ClipController(this, sectors[0])
     }
 
     override fun draw()
     {
         background(55f)
         sva.listen()
+        clips.update()
 
-        ui!!.render()
+        ui.render()
     }
 
     fun movieEvent(m: Movie) {
@@ -58,18 +77,18 @@ class SVASketch : PApplet()
     }
 
     override fun mousePressed() {
-        ui!!.mousePressed()
+        ui.mousePressed()
     }
 
     override fun mouseDragged() {
-        ui!!.mouseDragged()
+        ui.mouseDragged()
     }
 
     override fun mouseMoved() {
-        ui!!.mouseMoved()
+        ui.mouseMoved()
     }
 
     override fun mouseReleased() {
-        ui!!.mouseReleased()
+        ui.mouseReleased()
     }
 }
