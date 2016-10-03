@@ -47,10 +47,7 @@ class SVASketch : PApplet()
         syphon.setupSyphon(NAME)
 
         ui = UIController(this)
-
-        sva.init()
         ui.init()
-
 
         // add default sectors
         sectors.add(Sector("Low", 0f, 0.3333f, "low"))
@@ -61,6 +58,13 @@ class SVASketch : PApplet()
             ui.sectorView.addSector(sector)
 
         clips = ClipController(this, sectors[0])
+
+
+        val player = sva.minim.loadFile("techhouse-minimix.mp3", 2048)
+        player.play()
+
+        sva.init(player)
+
     }
 
     override fun draw()

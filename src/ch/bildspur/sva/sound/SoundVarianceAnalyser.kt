@@ -31,12 +31,6 @@ class SoundVarianceAnalyser(internal var sketch: PApplet) {
     var track: LoopRingBuffer
         internal set
 
-    var fft: FFT
-        internal set
-
-    var beatDetect: BeatDetect
-        internal set
-
     var variance: Float = 0f
         internal set
 
@@ -46,9 +40,7 @@ class SoundVarianceAnalyser(internal var sketch: PApplet) {
         minim = Minim(sketch)
 
         source = minim.lineIn
-        track = LoopRingBuffer(0)
-        fft = FFT(1, 1f)
-        beatDetect = BeatDetect()
+        track = LoopRingBuffer(1)
     }
 
     fun init() {
@@ -58,10 +50,6 @@ class SoundVarianceAnalyser(internal var sketch: PApplet) {
     fun init(source: AudioSource) {
         this.source = source
         track = LoopRingBuffer(RING_BUFFER_SIZE)
-
-        fft = FFT(source.bufferSize(), source.sampleRate())
-        beatDetect = BeatDetect(source.bufferSize(), source.sampleRate())
-        beatDetect.setSensitivity(200)
     }
 
     fun varianceOverTimeNorm() : Float {
@@ -80,9 +68,6 @@ class SoundVarianceAnalyser(internal var sketch: PApplet) {
 
     fun listen() {
         track.put(source.mix.toArray())
-
-        fft.forward(source.mix)
-        beatDetect.detect(source.mix)
 
         // detect variance
         variance = 0f

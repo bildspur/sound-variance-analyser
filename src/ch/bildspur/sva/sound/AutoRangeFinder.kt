@@ -11,36 +11,33 @@ class AutoRangeFinder() {
     var minValue: Float = 0f
     var maxValue: Float = 0f
 
-    private var afterReset = true
-
     val newRangeFound = Event<AutoRangeFinder>()
+
+    val history = LoopRingBuffer(900)
 
     fun update(value :Float)
     {
-        if(afterReset)
+        history.put(value)
+
+        val buffer = history.getBuffer()
+        val min = buffer.min()!!.toFloat()
+        val max = buffer.max()!!.toFloat()
+
+        if(min != minValue)
         {
-            minValue = value
-            maxValue = value
-            afterReset = false
-
-            newRangeFound(this)
-
-            return
-        }
-
-        if(minValue > value) {
-            minValue = value
+            minValue = min
             newRangeFound(this)
         }
 
-        if(maxValue < value) {
-            maxValue = value
+        if(max != maxValue)
+        {
+            maxValue = max
             newRangeFound(this)
         }
     }
 
     fun reset()
     {
-        afterReset = true
+
     }
 }
