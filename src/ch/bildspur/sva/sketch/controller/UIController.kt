@@ -188,6 +188,7 @@ class UIController(val sketch: SVASketch)
     {
         val pfont = sketch.createFont(defaultFont, defaultFontSize, false)
         val font = ControlFont(pfont, defaultFontSize.toInt())
+        val valueLabelFont = nameField.valueLabel.font
 
         for(control in cp5.all)
         {
@@ -199,11 +200,8 @@ class UIController(val sketch: SVASketch)
                 is Textfield -> {
                     control.captionLabel.style.marginTop = labelMarginTop
                     control.captionLabel.style.marginLeft = labelMarginLeft
-                    control.valueLabel.font = font
-                    control.valueLabel.setSize(defaultFontSize.toInt())
+                    control.valueLabel.font = valueLabelFont
                     control.valueLabel.toUpperCase(false)
-
-                    control.setColorCursor(Color(255, 255, 255).rgb)
                 }
 
                 is Slider -> {
