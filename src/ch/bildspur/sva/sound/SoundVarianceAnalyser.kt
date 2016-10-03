@@ -64,11 +64,14 @@ class SoundVarianceAnalyser(internal var sketch: PApplet) {
         beatDetect.setSensitivity(200)
     }
 
-    fun varianceOverTime() : Float
-    {
+    fun varianceOverTimeNorm() : Float {
+        return normalizeVariance(varianceOverTime())
+    }
+
+    fun varianceOverTime() : Float {
         val sensitivitySize = (MAX_SENSITIVTY * (1f - sensitivity)).toInt()
         val values = varianceTracking.getLatest(sensitivitySize)
-        return normalizeVariance(values.linearWeightedAverage().toFloat())
+        return values.linearWeightedAverage().toFloat()
     }
 
     internal fun normalizeVariance(variance:Float) : Float {

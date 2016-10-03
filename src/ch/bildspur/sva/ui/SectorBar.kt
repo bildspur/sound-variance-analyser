@@ -47,7 +47,7 @@ class SectorBar(val sketch: SVASketch, val width:Float, val height:Float) {
 
     internal fun visualizeVarianceOverTime()
     {
-        val variance = sketch.sva.varianceOverTime()
+        val variance = sketch.sva.varianceOverTimeNorm()
 
         sketch.noStroke()
         sketch.fill(255f, 100f)

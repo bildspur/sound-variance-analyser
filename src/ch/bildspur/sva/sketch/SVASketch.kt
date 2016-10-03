@@ -14,7 +14,7 @@ import processing.video.Movie
 class SVASketch : PApplet()
 {
     internal val OUTPUT_WIDTH = 600
-    internal val OUTPUT_HEIGHT = 400
+    internal val OUTPUT_HEIGHT = 450
 
     internal val NAME = "Sound Variance Analyser"
 

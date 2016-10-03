@@ -2,14 +2,13 @@ package ch.bildspur.sva.sketch.controller
 
 import ch.bildspur.sva.model.Sector
 import ch.bildspur.sva.sketch.SVASketch
+import ch.bildspur.sva.sound.AutoRangeFinder
 import ch.bildspur.sva.ui.ClipView
 import ch.bildspur.sva.ui.LineView
 import ch.bildspur.sva.ui.SectorBar
 import ch.bildspur.sva.util.center
-import controlP5.ControlFont
-import controlP5.ControlP5
-import controlP5.Slider
-import controlP5.Textfield
+import controlP5.*
+import org.omg.CORBA.portable.Delegate
 import processing.core.PApplet
 import processing.core.PVector
 import java.awt.Color
@@ -27,6 +26,8 @@ class UIController(val sketch: SVASketch)
     val editControlX = (sketch.width / 2) + margin + (-labelMarginLeft)
     val editControlWidth = 150
     val editControlHeight = 20
+
+    val svaControlX = (2 * margin) + (-labelMarginLeft)
 
     val defaultFont = "Lucida Sans"
     val defaultFontSize = 9f
@@ -53,6 +54,12 @@ class UIController(val sketch: SVASketch)
     var separator : LineView by Delegates.notNull()
 
     var sensitivitySlider: Slider by Delegates.notNull()
+    var minVarianceField : Textfield by Delegates.notNull()
+    var maxVarianceField : Textfield by Delegates.notNull()
+
+    var autoRangeToggle : Toggle by Delegates.notNull()
+
+    val autoRangeFinder = AutoRangeFinder()
 
     init {
         cp5 = ControlP5(sketch)
@@ -109,6 +116,8 @@ class UIController(val sketch: SVASketch)
         fadeInSlider = cp5.addSlider("Fade In")
                 .setPosition(editControlX, hPos)
                 .setSize(editControlWidth, editControlHeight)
+                .setValue(0f)
+                .setRange(0f, 60f)
                 .onChange { e ->
                     selectedSector?.fadeIn = fadeInSlider.value
                 }
@@ -117,6 +126,8 @@ class UIController(val sketch: SVASketch)
         fadeOutSlider = cp5.addSlider("Fade Out")
                 .setPosition(editControlX, hPos)
                 .setSize(editControlWidth, editControlHeight)
+                .setValue(0f)
+                .setRange(0f, 60f)
                 .onChange { e ->
                     selectedSector?.fadeOut = fadeOutSlider.value
                 }
@@ -125,6 +136,8 @@ class UIController(val sketch: SVASketch)
         clipDurationSlider = cp5.addSlider("Clip Duration")
                 .setPosition(editControlX, hPos)
                 .setSize(editControlWidth, editControlHeight)
+                .setValue(0f)
+                .setRange(0f, 600f)
                 .onChange { e ->
                     selectedSector?.clipDuration = clipDurationSlider.value.toInt()
                 }
@@ -144,13 +157,60 @@ class UIController(val sketch: SVASketch)
         hPos += (2 * controlSpace)
 
         sensitivitySlider = cp5.addSlider("Sensitivity")
-                .setPosition(margin * 2, hPos)
+                .setPosition(svaControlX, hPos)
                 .setSize(editControlWidth, editControlHeight)
                 .setValue(sketch.sva.sensitivity)
                 .setRange(0f, 1f)
                 .onChange { e ->
                     sketch.sva.sensitivity = sensitivitySlider.value
                 }
+
+        hPos += endField.height + controlSpace
+
+        minVarianceField = cp5.addTextfield("Min Variance")
+                .setPosition(svaControlX, hPos)
+                .setSize(editControlWidth, editControlHeight)
+                .setText(sketch.sva.minVariance.toString())
+                .setAutoClear(false)
+                .onChange { e ->
+                    val result = tryParseFloat(minVarianceField.text)
+                    if(result.first)
+                        sketch.sva.minVariance = result.second
+                }
+
+        hPos += endField.height + controlSpace
+
+        maxVarianceField = cp5.addTextfield("Max Variance")
+                .setPosition(svaControlX, hPos)
+                .setSize(editControlWidth, editControlHeight)
+                .setText(sketch.sva.maxVariance.toString())
+                .setAutoClear(false)
+                .onChange { e ->
+                    val result = tryParseFloat(maxVarianceField.text)
+                    if(result.first)
+                        sketch.sva.maxVariance = result.second
+                }
+
+        hPos += endField.height + controlSpace
+
+        autoRangeToggle = cp5.addToggle("Auto Range")
+                .setPosition(svaControlX, hPos)
+                .setSize(editControlWidth, editControlHeight)
+                .onChange {
+                    PApplet.println("Switch is: ${if(autoRangeToggle.state) "ON" else "OFF"}")
+
+                    if(autoRangeToggle.state)
+                        autoRangeFinder.reset()
+                }
+
+
+        autoRangeFinder.newRangeFound += {
+            minVarianceField.text = autoRangeFinder.minValue.toString()
+            maxVarianceField.text = autoRangeFinder.maxValue.toString()
+
+            minVarianceField.submit()
+            maxVarianceField.submit()
+        }
 
         styleCP5()
     }
@@ -226,6 +286,10 @@ class UIController(val sketch: SVASketch)
         sectorView.render()
         clipView.render()
         separator.render(sketch.g)
+
+        // range finder
+        if(autoRangeToggle.state)
+            autoRangeFinder.update(sketch.sva.varianceOverTime())
     }
 
     internal fun center(width:Float):Float
