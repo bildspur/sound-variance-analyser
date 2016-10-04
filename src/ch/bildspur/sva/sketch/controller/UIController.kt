@@ -8,7 +8,6 @@ import ch.bildspur.sva.ui.LineView
 import ch.bildspur.sva.ui.SectorBar
 import ch.bildspur.sva.util.center
 import controlP5.*
-import org.omg.CORBA.portable.Delegate
 import processing.core.PApplet
 import processing.core.PVector
 import java.awt.Color
@@ -17,8 +16,7 @@ import kotlin.properties.Delegates
 /**
  * Created by cansik on 25.09.16.
  */
-class UIController(val sketch: SVASketch)
-{
+class UIController(val sketch: SVASketch) {
     val controlSpace = 10f
     val margin = 25f
     val labelMarginLeft = -80
@@ -34,32 +32,32 @@ class UIController(val sketch: SVASketch)
 
     val backgroundColor = Color(52, 73, 94)
 
-    val cp5:ControlP5
+    val cp5: ControlP5
     val sectorView = SectorBar(sketch, sketch.width - (2f * margin), 40f)
 
     var nameField: Textfield by Delegates.notNull()
-    var startField : Textfield by Delegates.notNull()
-    var endField : Textfield by Delegates.notNull()
+    var startField: Textfield by Delegates.notNull()
+    var endField: Textfield by Delegates.notNull()
 
-    var fadeInSlider : Slider by Delegates.notNull()
-    var fadeOutSlider : Slider by Delegates.notNull()
+    var fadeInSlider: Slider by Delegates.notNull()
+    var fadeOutSlider: Slider by Delegates.notNull()
 
     var clipDurationSlider: Slider by Delegates.notNull()
     var clipFolderField: Textfield by Delegates.notNull()
 
-    var selectedSector : Sector? = null
+    var selectedSector: Sector? = null
 
-    var clipView : ClipView by Delegates.notNull()
+    var clipView: ClipView by Delegates.notNull()
 
-    var separator : LineView by Delegates.notNull()
+    var separator: LineView by Delegates.notNull()
 
     var sensitivitySlider: Slider by Delegates.notNull()
-    var minVarianceField : Textfield by Delegates.notNull()
-    var maxVarianceField : Textfield by Delegates.notNull()
+    var minVarianceField: Textfield by Delegates.notNull()
+    var maxVarianceField: Textfield by Delegates.notNull()
 
-    var autoRangeToggle : Toggle by Delegates.notNull()
+    var autoRangeToggle: Toggle by Delegates.notNull()
 
-    var initMicrophoneButton : Button by Delegates.notNull()
+    var initMicrophoneButton: Button by Delegates.notNull()
 
     val autoRangeFinder = AutoRangeFinder()
 
@@ -78,6 +76,7 @@ class UIController(val sketch: SVASketch)
 
         clipView = ClipView(sketch, 200f, 200f)
         clipView.position = PVector(sketch.center(clipView.width, sectorView.position.x, sketch.width / 2f), hPos)
+        clipView.image = sketch.clips.output
 
         // init cp5 controls
         nameField = cp5.addTextfield("Name")
@@ -95,7 +94,7 @@ class UIController(val sketch: SVASketch)
                 .setAutoClear(false)
                 .onChange { e ->
                     val result = tryParseFloat(startField.text)
-                    if(result.first)
+                    if (result.first)
                         selectedSector?.start = result.second
                 }
         hPos += startField.height + controlSpace
@@ -106,7 +105,7 @@ class UIController(val sketch: SVASketch)
                 .setAutoClear(false)
                 .onChange { e ->
                     val result = tryParseFloat(endField.text)
-                    if(result.first)
+                    if (result.first)
                         selectedSector?.end = result.second
                 }
         hPos += endField.height + controlSpace
@@ -180,7 +179,7 @@ class UIController(val sketch: SVASketch)
                 .setAutoClear(false)
                 .onChange { e ->
                     val result = tryParseFloat(minVarianceField.text)
-                    if(result.first)
+                    if (result.first)
                         sketch.sva.minVariance = result.second
                 }
 
@@ -193,7 +192,7 @@ class UIController(val sketch: SVASketch)
                 .setAutoClear(false)
                 .onChange { e ->
                     val result = tryParseFloat(maxVarianceField.text)
-                    if(result.first)
+                    if (result.first)
                         sketch.sva.maxVariance = result.second
                 }
 
@@ -203,7 +202,7 @@ class UIController(val sketch: SVASketch)
                 .setPosition(svaControlX, hPos)
                 .setSize(editControlWidth, editControlHeight)
                 .onChange {
-                    if(autoRangeToggle.state)
+                    if (autoRangeToggle.state)
                         autoRangeFinder.reset()
                 }
 
@@ -218,9 +217,8 @@ class UIController(val sketch: SVASketch)
         styleCP5()
     }
 
-    internal fun selectedSectorChanged()
-    {
-        if(selectedSector == null)
+    internal fun selectedSectorChanged() {
+        if (selectedSector == null)
             return
 
         nameField.text = selectedSector!!.name
@@ -234,8 +232,7 @@ class UIController(val sketch: SVASketch)
         clipFolderField.text = selectedSector!!.clipFolder
     }
 
-    internal fun clearFields()
-    {
+    internal fun clearFields() {
         nameField.text = ""
         startField.text = ""
         endField.text = ""
@@ -247,19 +244,16 @@ class UIController(val sketch: SVASketch)
         clipFolderField.text = ""
     }
 
-    internal fun styleCP5()
-    {
+    internal fun styleCP5() {
         val pfont = sketch.createFont(defaultFont, defaultFontSize, false)
         val font = ControlFont(pfont, defaultFontSize.toInt())
         val valueLabelFont = nameField.valueLabel.font
 
-        for(control in cp5.all)
-        {
+        for (control in cp5.all) {
             control.setFont(font)
             control.setColorBackground(backgroundColor.rgb)
 
-            when (control)
-            {
+            when (control) {
                 is Textfield -> {
                     control.captionLabel.style.marginTop = labelMarginTop
                     control.captionLabel.style.marginLeft = labelMarginLeft
@@ -279,14 +273,12 @@ class UIController(val sketch: SVASketch)
         }
     }
 
-    fun sectorSelected(sector:Sector)
-    {
+    fun sectorSelected(sector: Sector) {
         selectedSector = sector
         selectedSectorChanged()
     }
 
-    fun render()
-    {
+    fun render() {
         cp5.begin()
         cp5.draw()
         cp5.end()
@@ -296,12 +288,11 @@ class UIController(val sketch: SVASketch)
         separator.render(sketch.g)
 
         // range finder
-        if(autoRangeToggle.state)
+        if (autoRangeToggle.state)
             autoRangeFinder.update(sketch.sva.varianceOverTime())
     }
 
-    internal fun center(width:Float):Float
-    {
+    internal fun center(width: Float): Float {
         return sketch.center(width, 0f, sketch.width.toFloat())
     }
 
