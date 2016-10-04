@@ -201,6 +201,7 @@ class UIController(val sketch: SVASketch) {
         autoRangeToggle = cp5.addToggle("Auto Range")
                 .setPosition(svaControlX, hPos)
                 .setSize(editControlWidth, editControlHeight)
+                .setState(true)
                 .onChange {
                     if (autoRangeToggle.state)
                         autoRangeFinder.reset()

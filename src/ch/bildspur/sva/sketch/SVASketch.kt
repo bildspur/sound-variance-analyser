@@ -48,17 +48,20 @@ class SVASketch : PApplet() {
         syphon.setupSyphon(NAME)
 
         // add default sectors
-        sectors.add(Sector("Low", 0f, 0.3333f, "low"))
-        sectors.add(Sector("Mid", 0.3333f, 0.6666f, "mid"))
-        sectors.add(Sector("High", 0.6666f, 1f, "high"))
+        sectors.add(Sector("Low", 0f, 0.3333f, "data/low"))
+        sectors.add(Sector("Mid", 0.3333f, 0.6666f, "data/mid"))
+        sectors.add(Sector("High", 0.6666f, 1f, "data/high"))
 
         clips = ClipController(this, sectors[0])
 
         ui = UIController(this)
         ui.init()
 
-        for (sector in sectors)
+        // add sectors to all relevant controllers
+        for (sector in sectors) {
             ui.sectorView.addSector(sector)
+            clips.addSector(sector)
+        }
 
         val player = sva.minim.loadFile("audio/techhouse-minimix.mp3", 2048)
         player.play()
@@ -69,7 +72,10 @@ class SVASketch : PApplet() {
     override fun draw() {
         background(55f)
         sva.listen()
+
         clips.update()
+
+        syphon.sendImageToSyphon(clips.output)
 
         ui.render()
     }

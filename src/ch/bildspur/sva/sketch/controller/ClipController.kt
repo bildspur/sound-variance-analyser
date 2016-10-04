@@ -2,11 +2,10 @@ package ch.bildspur.sva.sketch.controller
 
 import ch.bildspur.event.Event
 import ch.bildspur.sva.model.Sector
+import ch.bildspur.sva.model.SectorMovie
 import ch.bildspur.sva.sketch.SVASketch
 import processing.core.PApplet
 import processing.core.PGraphics
-import java.awt.Color
-import java.nio.file.Path
 
 /**
  * Created by cansik on 03.10.16.
@@ -16,21 +15,36 @@ class ClipController(var sketch: SVASketch, var sector: Sector) {
 
     val output: PGraphics
 
+    val movies = mutableListOf<SectorMovie>()
+
     init {
         sectorChanged += { e -> sectorChanged(e.first, e.second) }
         output = sketch.createGraphics(SVASketch.OUTPUT_WIDTH, SVASketch.OUTPUT_HEIGHT, PApplet.P2D)
+    }
+
+    fun addSector(sector: Sector) {
+        movies.add(SectorMovie(sketch, sector))
     }
 
     fun update() {
         detectSectorChange()
 
         output.beginDraw()
-        output.background(Color(41, 128, 185).rgb)
+        output.background(0)
+        for (movie in movies)
+            movie.render(output)
         output.endDraw()
     }
 
     private fun sectorChanged(last: Sector, next: Sector) {
         PApplet.println("Sector changed from ${last.name} to ${next.name}")
+
+        getSectorMovie(last).fadeOut()
+        getSectorMovie(next).fadeIn()
+    }
+
+    private fun getSectorMovie(sector: Sector): SectorMovie {
+        return movies.single { it.sector == sector }
     }
 
     private fun detectSectorChange() {
@@ -43,8 +57,5 @@ class ClipController(var sketch: SVASketch, var sector: Sector) {
                 break
             }
         }
-    }
-
-    private fun getMovie(path: Path) {
     }
 }
