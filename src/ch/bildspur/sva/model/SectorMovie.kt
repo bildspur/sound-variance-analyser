@@ -47,15 +47,15 @@ class SectorMovie(val sketch: SVASketch, val sector: Sector) {
     }
 
     fun fadeOut() {
-        fadeAnimation.setTimeInSeconds(sector.fadeOut) // * PApplet.map(alpha, 0f, 255f, 0f, 1f)
-        fadeAnimation.start = 255f
+        fadeAnimation.setTimeInSeconds(sector.fadeOut * PApplet.map(alpha, 0f, 255f, 0f, 1f))
+        fadeAnimation.start = alpha
         fadeAnimation.end = 0f
         fadeAnimation.start()
     }
 
     fun fadeIn() {
-        fadeAnimation.setTimeInSeconds(sector.fadeIn) // * PApplet.map(alpha, 255f, 0f, 0f, 1f)
-        fadeAnimation.start = 0f
+        fadeAnimation.setTimeInSeconds(sector.fadeIn * PApplet.map(alpha, 255f, 0f, 0f, 1f))
+        fadeAnimation.start = alpha
         fadeAnimation.end = 255f
         fadeAnimation.start()
     }
