@@ -59,6 +59,8 @@ class UIController(val sketch: SVASketch)
 
     var autoRangeToggle : Toggle by Delegates.notNull()
 
+    var initMicrophoneButton : Button by Delegates.notNull()
+
     val autoRangeFinder = AutoRangeFinder()
 
     init {
@@ -152,6 +154,14 @@ class UIController(val sketch: SVASketch)
 
         hPos += (2 * controlSpace)
 
+        initMicrophoneButton = cp5.addButton("Init Audio")
+                .setPosition(editControlX, hPos)
+                .setSize(editControlWidth, editControlHeight)
+                .onChange { e ->
+                    PApplet.println("initializing audio...")
+                    sketch.sva.init()
+                }
+
         sensitivitySlider = cp5.addSlider("Sensitivity")
                 .setPosition(svaControlX, hPos)
                 .setSize(editControlWidth, editControlHeight)
@@ -193,12 +203,9 @@ class UIController(val sketch: SVASketch)
                 .setPosition(svaControlX, hPos)
                 .setSize(editControlWidth, editControlHeight)
                 .onChange {
-                    PApplet.println("Switch is: ${if(autoRangeToggle.state) "ON" else "OFF"}")
-
                     if(autoRangeToggle.state)
                         autoRangeFinder.reset()
                 }
-
 
         autoRangeFinder.newRangeFound += {
             minVarianceField.text = autoRangeFinder.minValue.toString()

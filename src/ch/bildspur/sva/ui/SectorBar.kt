@@ -48,10 +48,16 @@ class SectorBar(val sketch: SVASketch, val width:Float, val height:Float) {
     internal fun visualizeVarianceOverTime()
     {
         val variance = sketch.sva.varianceOverTimeNorm()
+        val value = Math.min(Math.max(0f, variance), 1f)
+
+        var color = Color.white
+
+        if(variance < 0.0 || variance > 1.0)
+            color = Color(231, 76, 60)
 
         sketch.noStroke()
-        sketch.fill(255f, 100f)
-        sketch.rect(0f, 0f, PApplet.map(variance, 0f, 1f, 0f, width), height)
+        sketch.fill(color.rgb, 200f)
+        sketch.rect(0f, height * 0.85f, PApplet.map(value, 0f, 1f, 0f, width), height * 0.15f)
     }
 
     internal fun drawSectors()

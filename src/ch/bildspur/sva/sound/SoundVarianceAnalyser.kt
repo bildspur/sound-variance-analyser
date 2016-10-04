@@ -14,7 +14,7 @@ import processing.core.PApplet
 class SoundVarianceAnalyser(internal var sketch: PApplet) {
     val BUFFER_SIZE = 2048
     val RING_BUFFER_SIZE = BUFFER_SIZE * 10
-    val MAX_SENSITIVTY = 200
+    val MAX_SENSITIVTY = 300
 
     var maxVariance = 0.01f
 

@@ -1,7 +1,6 @@
 package ch.bildspur.sva.sound
 
 import ch.bildspur.event.Event
-import ch.bildspur.sva.model.Sector
 
 /**
  * Created by cansik on 03.10.16.
@@ -13,7 +12,7 @@ class AutoRangeFinder() {
 
     val newRangeFound = Event<AutoRangeFinder>()
 
-    val history = LoopRingBuffer(900)
+    var history = LoopRingBuffer(900)
 
     fun update(value :Float)
     {
@@ -38,6 +37,6 @@ class AutoRangeFinder() {
 
     fun reset()
     {
-
+        history = LoopRingBuffer(900)
     }
 }
