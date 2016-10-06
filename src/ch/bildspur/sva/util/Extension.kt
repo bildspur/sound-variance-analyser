@@ -8,8 +8,7 @@ import processing.core.PImage
  * Created by cansik on 02.10.16.
  */
 
-fun PApplet.center(length:Float, min:Float, max:Float) : Float
-{
+fun PApplet.center(length: Float, min: Float, max: Float): Float {
     val container = max - min
     return ((container - length) / 2f) + min
 }
@@ -32,3 +31,7 @@ fun PGraphics.centerImageAdjusted(img: PImage) {
 fun PGraphics.centerImage(img: PImage, width: Float, height: Float) {
     this.image(img, this.width / 2.0f - width / 2.0f, this.height / 2.0f - height / 2.0f, width, height)
 }
+
+fun Double.format(digits: Int) = java.lang.String.format("%.${digits}f", this)
+
+fun Float.format(digits: Int) = java.lang.String.format("%.${digits}f", this)

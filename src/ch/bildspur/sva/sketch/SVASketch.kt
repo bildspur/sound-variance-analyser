@@ -5,6 +5,7 @@ import ch.bildspur.sva.sketch.controller.ClipController
 import ch.bildspur.sva.sketch.controller.SyphonController
 import ch.bildspur.sva.sketch.controller.UIController
 import ch.bildspur.sva.sound.SoundVarianceAnalyser
+import ch.bildspur.sva.util.format
 import processing.core.PApplet
 import processing.core.PConstants
 import processing.opengl.PJOGL
@@ -34,6 +35,8 @@ class SVASketch : PApplet() {
     internal var clips: ClipController by Delegates.notNull()
 
     val sectors = mutableListOf<Sector>()
+
+    internal var fpsOverTime = 0f
 
     override fun settings() {
         size(OUTPUT_WIDTH, OUTPUT_HEIGHT, PConstants.P2D)
@@ -78,6 +81,14 @@ class SVASketch : PApplet() {
         syphon.sendImageToSyphon(clips.output)
 
         ui.render()
+
+        // draw fps
+        fpsOverTime += frameRate
+        val averageFPS = fpsOverTime / frameCount.toFloat()
+
+        g.textAlign(PApplet.LEFT, PApplet.BOTTOM)
+        fill(255)
+        text("FPS: ${frameRate.format(2)}\nFOT: ${averageFPS.format(2)}", 10f, height - 5f)
     }
 
     fun movieEvent(m: Movie) {
