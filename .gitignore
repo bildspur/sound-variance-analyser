@@ -2,3 +2,5 @@
 SVASketch.iml
 out
 SoundVarianceAnalyser.iml
+.gradle
+build
