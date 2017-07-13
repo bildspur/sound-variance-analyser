@@ -11,39 +11,74 @@ import java.io.File
  * Created by cansik on 04.10.16.
  */
 class SectorMovie(val sketch: SVASketch, val sector: Sector) {
-    var movie: Movie? = null
+    companion object
+    {
+        @JvmStatic val MOVIE_DISPLAY_TIME = 1000 * 20
+    }
+
+    lateinit var movie: Movie
+
+    val movies = mutableListOf<Movie>()
 
     var alpha = 0f
 
-    var movieTimer = 0
+    var lastMovieChange = 0
+
+    var movieIndex = 0
 
     var fadeAnimation = Animation(1f, 0f, 255f)
 
+    var firstInit = true
+
     init {
-        loadNextMovie()
+        loadMovies()
+        playNextMovie()
         fadeAnimation.start()
+
+        firstInit = false
     }
 
     fun render(g: PGraphics) {
-        if (movie != null) {
-            g.tint(255, alpha)
-            g.image(movie!!, 0f, 0f, g.width.toFloat(), g.height.toFloat())
-        }
+        g.tint(255, alpha)
+        g.image(movie, 0f, 0f, g.width.toFloat(), g.height.toFloat())
 
         fadeAnimation.update()
         alpha = fadeAnimation.value
 
-        movieTimer++
+        if(sketch.millis() - lastMovieChange > MOVIE_DISPLAY_TIME)
+            playNextMovie()
     }
 
-    internal fun loadNextMovie() {
-        // select first movie from folder
-        val folder = File(sector.clipFolder)
-        val moviePath = folder.list().filter { it.toLowerCase().endsWith(".mov") }.first()
-        movie = Movie(sketch, "$folder/$moviePath")
-        movie!!.loop()
+    internal fun playNextMovie()
+    {
+        val oldMovieIndex = movieIndex
+        movieIndex = (movieIndex + 1) % movies.size
 
-        PApplet.println("Loaded for ${sector.name}: $moviePath")
+        if(oldMovieIndex != movieIndex) {
+            if(!firstInit)
+                movie.stop()
+
+            movie = movies[movieIndex]
+            movie.loop()
+        }
+
+        lastMovieChange = sketch.millis()
+    }
+
+    internal fun loadMovies() {
+        // select next movie from folder
+        val folder = File(sector.clipFolder)
+        val moviePaths = folder.list().filter { it.toLowerCase().endsWith(".mov") }
+
+        moviePaths.forEach{
+            val fileName = "$folder/$it"
+            val m = Movie(sketch, fileName)
+
+            if(!movies.any { it.filename ==  fileName}) {
+                movies.add(m)
+                PApplet.println("Loaded for ${sector.name}: $it")
+            }
+        }
     }
 
     fun fadeOut() {

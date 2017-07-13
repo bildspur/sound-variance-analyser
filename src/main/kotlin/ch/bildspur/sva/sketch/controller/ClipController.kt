@@ -37,8 +37,6 @@ class ClipController(var sketch: SVASketch, var sector: Sector) {
     }
 
     private fun sectorChanged(last: Sector, next: Sector) {
-        PApplet.println("Sector changed from ${last.name} to ${next.name}")
-
         getSectorMovie(last).fadeOut()
         getSectorMovie(next).fadeIn()
     }

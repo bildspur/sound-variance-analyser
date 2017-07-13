@@ -66,13 +66,18 @@ class SVASketch : PApplet() {
             clips.addSector(sector)
         }
 
+        /*
         val player = sva.minim.loadFile("audio/techhouse-minimix.mp3", 2048)
         player.play()
+        */
 
-        sva.init(player)
+        sva.init()
     }
 
     override fun draw() {
+        if(frameCount < 2)
+            return
+
         background(55f)
         sva.listen()
 
