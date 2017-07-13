@@ -13,7 +13,7 @@ import java.io.File
 class SectorMovie(val sketch: SVASketch, val sector: Sector) {
     companion object
     {
-        @JvmStatic val MOVIE_DISPLAY_TIME = 1000 * 20
+        @JvmStatic var MOVIE_DISPLAY_TIME = 1000 * 20
     }
 
     lateinit var movie: Movie
@@ -54,7 +54,7 @@ class SectorMovie(val sketch: SVASketch, val sector: Sector) {
         val oldMovieIndex = movieIndex
         movieIndex = (movieIndex + 1) % movies.size
 
-        if(oldMovieIndex != movieIndex) {
+        if(oldMovieIndex != movieIndex || firstInit) {
             if(!firstInit)
                 movie.stop()
 
@@ -65,7 +65,7 @@ class SectorMovie(val sketch: SVASketch, val sector: Sector) {
         lastMovieChange = sketch.millis()
     }
 
-    internal fun loadMovies() {
+    fun loadMovies() {
         // select next movie from folder
         val folder = File(sector.clipFolder)
         val moviePaths = folder.list().filter { it.toLowerCase().endsWith(".mov") }

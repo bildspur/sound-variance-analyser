@@ -1,6 +1,7 @@
 package ch.bildspur.sva.sketch.controller
 
 import ch.bildspur.sva.model.Sector
+import ch.bildspur.sva.model.SectorMovie
 import ch.bildspur.sva.sketch.SVASketch
 import ch.bildspur.sva.sound.AutoRangeFinder
 import ch.bildspur.sva.ui.ClipView
@@ -59,7 +60,11 @@ class UIController(val sketch: SVASketch) {
 
     var initMicrophoneButton: Button by Delegates.notNull()
 
+    var reloadMoviesButton : Button by Delegates.notNull()
+
     val autoRangeFinder = AutoRangeFinder()
+
+    var movieTimeSlider : Slider by Delegates.notNull()
 
     init {
         cp5 = ControlP5(sketch)
@@ -151,7 +156,9 @@ class UIController(val sketch: SVASketch) {
 
         separator = LineView(sketch, hPos, 2 * margin)
 
+
         hPos += (2 * controlSpace)
+        val shpos = hPos
 
         initMicrophoneButton = cp5.addButton("Init Audio")
                 .setPosition(editControlX, hPos)
@@ -160,6 +167,31 @@ class UIController(val sketch: SVASketch) {
                     PApplet.println("initializing audio...")
                     sketch.sva.init()
                 }
+
+        hPos += initMicrophoneButton.height + (controlSpace)
+
+        reloadMoviesButton = cp5.addButton("Reload Movies")
+                .setPosition(editControlX, hPos)
+                .setSize(editControlWidth, editControlHeight)
+                .onChange { e ->
+                    PApplet.println("reloading movies...")
+                    sketch.clips.movies.forEach{
+                        it.loadMovies()
+                    }
+                }
+
+        hPos += reloadMoviesButton.height + (controlSpace)
+
+        movieTimeSlider = cp5.addSlider("Movie Time (s)")
+                .setPosition(editControlX, hPos)
+                .setSize(editControlWidth, editControlHeight)
+                .setValue(SectorMovie.MOVIE_DISPLAY_TIME / 1000f)
+                .setRange(0f, 600f)
+                .onChange { e ->
+                    SectorMovie.MOVIE_DISPLAY_TIME = (movieTimeSlider.value * 1000).toInt()
+                }
+
+        hPos = shpos
 
         sensitivitySlider = cp5.addSlider("Sensitivity")
                 .setPosition(svaControlX, hPos)
