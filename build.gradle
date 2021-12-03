@@ -1,26 +1,19 @@
+plugins {
+    id 'java-library'
+    id "org.jetbrains.kotlin.jvm" version "1.4.31"
+}
+
 group 'ch.bildspur.sva'
 version '1.0-SNAPSHOT'
 
-buildscript {
-    ext.kotlin_version = '1.0.4'
-
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-    }
-}
-
-apply plugin: 'kotlin'
+sourceCompatibility = 1.8
 
 repositories {
     mavenCentral()
-
 }
 
 dependencies {
-    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
     
     compile files('lib/processing/core/library/core.jar')
     compile files('lib/processing/core/library/gluegen-rt-natives-macosx-universal.jar')

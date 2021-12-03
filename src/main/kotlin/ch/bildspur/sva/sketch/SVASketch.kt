@@ -23,8 +23,8 @@ class SVASketch : PApplet() {
         @JvmStatic val OUTPUT_HEIGHT = 480
     }
 
-    internal val OUTPUT_WIDTH = 600
-    internal val OUTPUT_HEIGHT = 450
+    internal val OUTPUT_WIDTH = 640
+    internal val OUTPUT_HEIGHT = 500
 
     internal val NAME = "Sound Variance Analyser"
 
@@ -40,7 +40,7 @@ class SVASketch : PApplet() {
 
     override fun settings() {
         size(OUTPUT_WIDTH, OUTPUT_HEIGHT, PConstants.P2D)
-        PJOGL.profile = 1
+        // PJOGL.profile = 1
     }
 
     override fun setup() {
@@ -97,7 +97,11 @@ class SVASketch : PApplet() {
     }
 
     fun movieEvent(m: Movie) {
-        m.read()
+        try {
+            m.read()
+        } catch (ex: Exception) {
+
+        }
     }
 
     override fun mousePressed() {
